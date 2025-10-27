@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Fast Food Tier List</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: auto; padding: 20px; }
+        h1 { text-align: center; color: #333; }
+        .tier { margin-bottom: 20px; padding: 10px; border-radius: 5px; }
+        .tier h2 { margin-top: 0; }
+        /* Cores base para as tiers */
+        .S { background-color: #ffcccc; }
+        .A { background-color: #ffe0cc; }
+        .B { background-color: #fff3cc; }
+        .C { background-color: #eeffcc; }
+        .D { background-color: #cceeff; }
+        .F { background-color: #ccccee; }
+        .foods-list { list-style: none; padding: 0; }
+        .foods-list li { display: inline-block; background: white; padding: 5px 10px; margin: 3px; border-radius: 3px; border: 1px solid #ddd; }
+        form { margin-top: 20px; padding: 15px; border: 1px solid #eee; border-radius: 5px; }
+        input[type="text"], select { padding: 8px; margin-right: 10px; border: 1px solid #ccc; border-radius: 3px; }
+        input[type="submit"] { padding: 8px 15px; background-color: #5cb85c; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        input[type="submit"]:hover { background-color: #4cae4c; }
+    </style>
+</head>
+<body>
+    <h1>🍔 Minha Tier List de Fast Food 🍟</h1>
+    
+    {% for tier, foods in tier_list.items() %}
+        <div class="tier {{ tier }}">
+            <h2>Nível {{ tier }}</h2>
+            <ul class="foods-list">
+                {% for food in foods %}
+                    <li>{{ food }}</li>
+                {% endfor %}
+                {% if not foods %}
+                    <li>Vazio</li>
+                {% endif %}
+            </ul>
+        </div>
+    {% endfor %}
+
+    <h3>Adicionar Novo Item</h3>
+    <form action="{{ url_for('add_food') }}" method="post">
+        <input type="text" name="food" placeholder="Nome do Item" required>
+        <select name="tier" required>
+            {% for tier in tier_list.keys() %}
+                <option value="{{ tier }}">{{ tier }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Adicionar">
+    </form>
+
+    <hr>
+    
+    <h3>Mover Item para Outro Nível</h3>
+    <form action="{{ url_for('edit_food_tier') }}" method="post">
+        <input type="text" name="food_to_edit" placeholder="Item a Mover (Exato)" required>
+        <select name="new_tier" required>
+            {% for tier in tier_list.keys() %}
+                <option value="{{ tier }}">{{ tier }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Mover Item">
+    </form>
+
+    <hr>
+
+    <h3>Remover Item</h3>
+    <form action="{{ url_for('remove_food') }}" method="post">
+        <input type="text" name="food_to_remove" placeholder="Item a Remover (Exato)" required>
+        <input type="submit" value="Remover Item" style="background-color: #d9534f;">
+    </form>
+
+</body>
+</html>
